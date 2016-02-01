@@ -33,6 +33,7 @@ from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from rest_framework import status
 from xblock.fragment import Fragment
+from instructor.views.api import require_global_staff
 
 import shoppingcart
 import survey.utils
@@ -77,6 +78,7 @@ from shoppingcart.models import CourseRegistrationCode
 from shoppingcart.utils import is_shopping_cart_enabled
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 from student.models import UserTestGroup, CourseEnrollment
+from student.roles import GlobalStaff
 from student.views import is_course_blocked
 from util.cache import cache, cache_if_anonymous
 from util.date_utils import strftime_localized
@@ -393,6 +395,12 @@ def _index_bulk_op(request, course_key, chapter, section, position):
     if not registered:
         # TODO (vshnayder): do course instructors need to be registered to see course?
         log.debug(u'User %s tried to view course %s but is not enrolled', user, course.location.to_deprecated_string())
+        if bool(staff_access) == False:
+            return redirect("{url}?{redirect}".format(
+                url=reverse(enroll_staff, args=[course_key.to_deprecated_string()]),
+                redirect=request.GET.urlencode()
+                )
+            )
         return redirect(reverse('about_course', args=[course_key.to_deprecated_string()]))
 
     # see if all pre-requisites (as per the milestones app feature) have been fulfilled
@@ -641,7 +649,13 @@ def jump_to(_request, course_id, location):
     except InvalidKeyError:
         raise Http404(u"Invalid course_key or usage_key")
     try:
+        user = _request.user
         redirect_url = get_redirect_url(course_key, usage_key)
+        if GlobalStaff().has_user(user) and not CourseEnrollment.is_enrolled(user, course_key):
+            redirect_url = "{url}?next={redirect}".format(
+                url=reverse(enroll_staff, args=[course_key.to_deprecated_string()]),
+                redirect=redirect_url
+            )
     except ItemNotFoundError:
         raise Http404(u"No data at this location: {0}".format(usage_key))
     except NoPathToItem:
@@ -845,6 +859,54 @@ def get_cosmetic_display_price(course, registration_price):
     else:
         # Translators: This refers to the cost of the course. In this case, the course costs nothing so it is free.
         return _('Free')
+
+@require_global_staff
+@require_http_methods(['POST', 'GET'])
+def enroll_staff(request, course_id):
+    '''
+    1. Should be staff
+    2. should be a valid course_id
+    3. shouldn't be enrolled before
+    4. The requested view url to redirect
+
+    URL-ABC-GOTO-HERE-
+
+    1. You want to register for this course?
+        Confirm:
+            1. User is valid staff user who wants to enroll.
+            2. Course is valid course
+    2. Yes
+    3. Post request, enroll the user and redirect him to the requested view
+
+    :param request:
+    :param course_id:
+    :return:
+    '''
+    user = request.user
+    course_key = CourseKey.from_string(course_id)
+    _next = urllib.quote_plus(request.GET.get('next', 'info'), safe='/:?=')
+
+    if request.method == 'GET':
+        with modulestore().bulk_operations(course_key):
+            course = get_course_with_access(user, 'load', course_key, depth=2)
+
+        # Prompt for enrollment if Globalstaff is not enrolled in the course
+        if not registered_for_course(course, user):
+            return render_to_response('enroll_staff.html', {
+                'course': course,
+                'csrftoken': csrf(request)["csrf_token"]
+            })
+
+    elif request.method == 'POST' and 'enroll' in request.POST.dict():
+        enrollment = CourseEnrollment.get_or_create_enrollment(request.user, course_key)
+        enrollment.update_enrollment(is_active=True)
+        log.info(
+            u"User %s enrolled in %s via `enroll_staff` view",
+            user.username,
+            course_id
+        )
+
+    return redirect(_next)
 
 
 @ensure_csrf_cookie

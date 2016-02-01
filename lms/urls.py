@@ -365,6 +365,14 @@ urlpatterns += (
         name='about_course',
     ),
 
+    url(
+        r'^courses/{}/enroll_staff$'.format(
+            settings.COURSE_ID_PATTERN,
+        ),
+        'courseware.views.enroll_staff',
+        name='enroll_staff',
+    ),
+
     #Inside the course
     url(
         r'^courses/{}/$'.format(
