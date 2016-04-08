@@ -814,7 +814,7 @@ class TestVideoCDNRewriting(BaseTestXmodule):
         self.original_video_host = "www.originalvideo.com"
         self.original_video_url = self.original_video_host + "/" + self.original_video_file
 
-    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+    @patch.dict("django.conf.settings.VIDEO_CDN_URL",
                 {"CN": "https://chinacdn.cn/"})
     @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
                 ["www.originalvideo.com"])
@@ -831,7 +831,7 @@ class TestVideoCDNRewriting(BaseTestXmodule):
             cdn_response_video_url
         )
 
-    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+    @patch.dict("django.conf.settings.VIDEO_CDN_URL",
                 {"CN": "https://chinacdn.cn/"})
     @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
                 ["www.originalvideo.com"])
@@ -848,7 +848,7 @@ class TestVideoCDNRewriting(BaseTestXmodule):
             cdn_response_video_url
         )
 
-    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+    @patch.dict("django.conf.settings.VIDEO_CDN_URL",
                 {"CN": "https://chinacdn.cn/"})
     @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
                 ["www.originalvideo.com"])
@@ -861,7 +861,7 @@ class TestVideoCDNRewriting(BaseTestXmodule):
                                             self.original_video_url,
                                             settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS))
 
-    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+    @patch.dict("django.conf.settings.VIDEO_CDN_URL",
                 {"CN": "https://chinacdn.cn/"})
     @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
                 ["oktorewrite.com"])
