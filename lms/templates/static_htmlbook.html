@@ -1,8 +1,16 @@
-<%! from django.utils.translation import ugettext as _ %>
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import ugettext as _
+
+from openedx.core.djangolib.markup import HTML
+from openedx.core.djangolib.js_utils import (
+    dump_js_escaped_json, js_escaped_string
+)
+%>
 
 <%inherit file="main.html" />
 <%namespace name='static' file='static_content.html'/>
-<%block name="pagetitle">${_('{course_number} Textbook').format(course_number=course.display_number_with_default) | h}</%block>
+<%block name="pagetitle">${_('{course_number} Textbook').format(course_number=course.display_number_with_default)}</%block>
 
 <%block name="headextra">
 <%static:css group='style-course-vendor'/>
@@ -39,7 +47,7 @@
         if(options.notesEnabled) {
             onComplete = function(url) {
                 return function() {
-                    $('#viewerContainer').trigger('notes:init', [url, "${storage}", "${token}"]);
+                    $('#viewerContainer').trigger('notes:init', [url, "${storage | n, js_escaped_string}", "${token | n, js_escaped_string}"]);
                 }
             };
         }
@@ -93,20 +101,20 @@
     $(document).ready(function() {
         var options = {};
         %if 'url' in textbook:
-            options.url = "${textbook['url']}";
+            options.url = "${textbook['url'] | n, js_escaped_string}";
         %endif
         %if 'chapters' in textbook:
             var chptrs = [];
             %for chap in textbook['chapters']:
-                chptrs.push("${chap['url']}");
+                chptrs.push("${chap['url'] | n, js_escaped_string}");
             %endfor
             options.chapters = chptrs;
         %endif
         %if chapter is not None:
-            options.chapterNum = ${chapter};
+            options.chapterNum = ${chapter | n, dump_js_escaped_json};
         %endif
         %if anchor_id is not UNDEFINED and anchor_id is not None:
-            options.anchor_id = ${anchor_id};
+            options.anchor_id = ${anchor_id | n, dump_js_escaped_json};
         %endif
 
         options.notesEnabled = false;
@@ -136,7 +144,7 @@
             </%def>
 
             %for (index, entry) in enumerate(textbook['chapters']):
-              ${print_entry(entry, index+1)}
+              ${HTML(print_entry(entry, index+1))}
             % endfor
           </ul>
         </section>
