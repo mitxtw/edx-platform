@@ -814,8 +814,10 @@ class TestVideoCDNRewriting(BaseTestXmodule):
         self.original_video_host = "www.originalvideo.com"
         self.original_video_url = self.original_video_host + "/" + self.original_video_file
 
-    @patch.dict("django.conf.settings", {"VIDEO_CDN_VIDEO_URL": {"CN": "https://chinacdn.cn/"},
-                                         "VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS": ["www.originalvideo.com"]})
+    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+                {"CN": "https://chinacdn.cn/"})
+    @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
+                ["www.originalvideo.com"])
     def test_rewrite_video_url_success(self):
         """
         Test successful CDN request.
@@ -829,8 +831,10 @@ class TestVideoCDNRewriting(BaseTestXmodule):
             cdn_response_video_url
         )
 
-    @patch.dict("django.conf.settings", {"VIDEO_CDN_VIDEO_URL": {"CN": "https://chinacdn.cn/"},
-                                         "VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS": ["www.originalvideo.com"]})
+    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+                {"CN": "https://chinacdn.cn/"})
+    @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
+                ["www.originalvideo.com"])
     def test_rewrite_url_concat(self):
         """
         Test that written URLs are returned clean despite input
@@ -844,8 +848,10 @@ class TestVideoCDNRewriting(BaseTestXmodule):
             cdn_response_video_url
         )
 
-    @patch.dict("django.conf.settings", {"VIDEO_CDN_VIDEO_URL": {"CN": "https://chinacdn.cn/"},
-                                         "VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS": ["www.originalvideo.com"]})
+    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+                {"CN": "https://chinacdn.cn/"})
+    @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
+                ["www.originalvideo.com"])
     def test_rewrite_video_url_invalid_url(self):
         """
         Test if no alternative video in CDN exists.
@@ -855,8 +861,10 @@ class TestVideoCDNRewriting(BaseTestXmodule):
                                             self.original_video_url,
                                             settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS))
 
-    @patch.dict("django.conf.settings", {"VIDEO_CDN_VIDEO_URL": {"CN": "https://chinacdn.cn/"},
-                                         "VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS": ["oktorewrite.com"]})
+    @patch.dict("django.conf.settings.VIDEO_CDN_VIDEO_URL",
+                {"CN": "https://chinacdn.cn/"})
+    @patch.dict("django.conf.settings.VIDEO_CDN_REWRITABLE_SOURCE_DOMAINS",
+                ["oktorewrite.com"])
     def test_rewrite_video_url_whitelist(self):
         """
         Test if the original URL is not on the rewrite whitelist
