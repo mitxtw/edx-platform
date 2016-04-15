@@ -32,6 +32,9 @@ LOG_OVERRIDES = [
 for log_name, log_level in LOG_OVERRIDES:
     logging.getLogger(log_name).setLevel(log_level)
 
+### Apparently settings this in lms/envs/common.py isn't enough? Revert before merge pls ###
+FEATURES['ENABLE_SPECIAL_EXAMS'] = True
+
 
 ################################ EMAIL ########################################
 

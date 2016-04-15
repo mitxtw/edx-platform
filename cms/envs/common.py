@@ -187,7 +187,7 @@ FEATURES = {
     'ALLOW_HIDING_DISCUSSION_TAB': False,
 
     # Special Exams, aka Timed and Proctored Exams
-    'ENABLE_SPECIAL_EXAMS': False,
+    'ENABLE_SPECIAL_EXAMS': True,
 
     'ORGANIZATIONS_APP': False,
 

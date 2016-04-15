@@ -90,6 +90,8 @@ def should_show_debug_toolbar(_):
 # Stacktraces slow down page loads drastically (for pages with lots of queries).
 DEBUG_TOOLBAR_MONGO_STACKTRACES = False
 
+### Apparently settings this in cms/envs/common.py isn't enough? Revert before merge pls ###
+FEATURES['ENABLE_SPECIAL_EXAMS'] = True
 
 ################################ MILESTONES ################################
 FEATURES['MILESTONES_APP'] = True
