@@ -20,15 +20,35 @@
 
                 className: 'program-card',
 
+                attributes: function() {
+                    return {
+                        'aria-role': 'group',
+                        'aria-labelledby': 'program-' + this.model.get('id')
+                    };
+                },
+
                 tpl: _.template(programCardTpl),
 
-                initialize: function() {
+                initialize: function(data) {
+                    this.progressCollection = data.context.progressCollection; 
+                    this.progressModel = this.progressCollection.findWhere({
+                        programId: this.model.get('id')
+                    });
                     this.render();
                 },
 
                 render: function() {
-                    var templated = this.tpl(this.model.toJSON());
-                    this.$el.html(templated);
+                    var orgList = _.map(this.model.get('organizations'), function(org) {
+                            return gettext(org.key);
+                        }),
+                        data = $.extend(
+                            {},
+                            this.model.toJSON(),
+                            this.getProgramProgress(),
+                            {orgList: orgList.join(' ')}
+                        );
+
+                    this.$el.html(this.tpl(data));
                     this.postRender();
                 },
 
@@ -40,6 +60,33 @@
                             this.reLoadBannerImage();
                         }.bind(this), 100);
                     }
+                },
+
+                // Calculate counts for progress and percetages for styling
+                getProgramProgress: function() {
+                    var progress = this.progressModel.toJSON();
+                    
+                    progress.total = {
+                        completed: progress.completed.length,
+                        in_progress: progress.in_progress.length,
+                        not_started: progress.not_started.length
+                    };
+                    progress.total.courses = progress.total.completed + progress.total.in_progress + progress.total.not_started;
+
+                    progress.percentage = {
+                        completed: this.getWidth(progress.total.completed, progress.total.courses),
+                        in_progress: this.getWidth(progress.total.in_progress, progress.total.courses)
+                    };
+
+                    return {
+                        progress: progress
+                    };
+                },
+
+                getWidth: function(val, total) {
+                    var int = ( val / total ) * 100;
+                  
+                    return int + '%';
                 },
 
                 // Defer loading the rest of the page to limit FOUC
