@@ -111,7 +111,7 @@ from openedx.core.djangolib.js_utils import (
             options.chapters = chptrs;
         %endif
         %if chapter is not None:
-            options.chapterNum = ${chapter | n, dump_js_escaped_json};
+            options.chapterNum = ${int(chapter) | n, dump_js_escaped_json};
         %endif
         %if anchor_id is not UNDEFINED and anchor_id is not None:
             options.anchor_id = ${anchor_id | n, dump_js_escaped_json};
