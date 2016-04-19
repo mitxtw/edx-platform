@@ -22,7 +22,7 @@ class XBlockFixtureDesc(object):
     Description of an XBlock, used to configure a course fixture.
     """
 
-    def __init__(self, category, display_name, data=None, metadata=None, grader_type=None, publish='make_public'):
+    def __init__(self, category, display_name, data=None, metadata=None, grader_type=None, publish='make_public', **kwargs):
         """
         Configure the XBlock to be created by the fixture.
         These arguments have the same meaning as in the Studio REST API:
@@ -41,6 +41,8 @@ class XBlockFixtureDesc(object):
         self.publish = publish
         self.children = []
         self.locator = None
+        for kwarg in kwargs:
+            setattr(self, kwarg, kwargs[kwarg])
 
     def add_children(self, *args):
         """

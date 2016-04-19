@@ -36,7 +36,7 @@ from opaque_keys.edx.block_types import BlockTypeKeyV1
 from opaque_keys.edx.asides import AsideUsageKeyV1
 from contracts import contract, new_contract
 
-from django.db import DatabaseError, transaction
+from django.db import DatabaseError
 
 from xblock.runtime import KeyValueStore
 from xblock.exceptions import KeyValueMultiSaveError, InvalidScopeError
@@ -224,20 +224,19 @@ class DjangoOrmFieldCache(object):
             field_object = self._cache.get(cache_key)
 
             try:
-                with transaction.atomic():
-                    serialized_value = json.dumps(value)
-                    # It is safe to force an insert or an update, because
-                    # a) we should have retrieved the object as part of the
-                    #    prefetch step, so if it isn't in our cache, it doesn't exist yet.
-                    # b) no other code should be modifying these models out of band of
-                    #    this cache.
-                    if field_object is None:
-                        field_object = self._create_object(kvs_key, serialized_value)
-                        field_object.save(force_insert=True)
-                        self._cache[cache_key] = field_object
-                    else:
-                        field_object.value = serialized_value
-                        field_object.save(force_update=True)
+                serialized_value = json.dumps(value)
+                # It is safe to force an insert or an update, because
+                # a) we should have retrieved the object as part of the
+                #    prefetch step, so if it isn't in our cache, it doesn't exist yet.
+                # b) no other code should be modifying these models out of band of
+                #    this cache.
+                if field_object is None:
+                    field_object = self._create_object(kvs_key, serialized_value)
+                    field_object.save(force_insert=True)
+                    self._cache[cache_key] = field_object
+                else:
+                    field_object.value = serialized_value
+                    field_object.save(force_update=True)
 
             except DatabaseError:
                 log.exception("Saving field %r failed", kvs_key.field_name)
