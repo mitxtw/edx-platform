@@ -12,9 +12,10 @@ import httpretty
 from student.tests.factories import UserFactory
 from third_party_auth.tests.utils import ThirdPartyOAuthTestMixin, ThirdPartyOAuthTestMixinGoogle
 
+from .constants import DUMMY_REDIRECT_URL
 from .. import adapters
 from .. import views
-from .constants import DUMMY_REDIRECT_URL
+from . import mixins
 
 
 class _DispatchingViewTestCase(TestCase):
@@ -58,7 +59,7 @@ class _DispatchingViewTestCase(TestCase):
 
 
 @ddt.ddt
-class TestAccessTokenView(_DispatchingViewTestCase):
+class TestAccessTokenView(mixins.AccessTokenMixin, _DispatchingViewTestCase):
     """
     Test class for AccessTokenView
     """
@@ -83,10 +84,9 @@ class TestAccessTokenView(_DispatchingViewTestCase):
         response = self._post_request(self.user, client)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertIn('access_token', data)
         self.assertIn('expires_in', data)
-        self.assertIn('scope', data)
-        self.assertIn('token_type', data)
+        self.assertEqual(data['token_type'], 'JWT')
+        self.assert_valid_jwt_access_token(data['access_token'], self.user, data['scope'].split(' '))
 
     def test_dot_access_token_provides_refresh_token(self):
         response = self._post_request(self.user, self.dot_app)
