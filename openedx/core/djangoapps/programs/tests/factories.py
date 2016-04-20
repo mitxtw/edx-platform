@@ -52,3 +52,16 @@ class RunMode(factory.Factory):
 
     course_key = FuzzyText(prefix='org/', suffix='/run')
     mode_slug = 'verified'
+
+
+class Progress(factory.Factory):
+    """
+    Factory for stubbing program progress dicts.
+    """
+    class Meta(object):
+        model = dict
+
+    id = factory.Sequence(lambda n: n)  # pylint: disable=invalid-name
+    completed = 0
+    in_progress = 0
+    not_started = 0
