@@ -1,5 +1,5 @@
-define(["backbone", "underscore", "gettext", "js/models/validation_helpers", "js/utils/date_utils"],
-    function(Backbone, _, gettext, ValidationHelpers, DateUtils) {
+define(["backbone", "backbone-relational", "underscore", "gettext", "js/models/validation_helpers", "js/utils/date_utils"],
+    function(Backbone, BackboneRelational, _, gettext, ValidationHelpers, DateUtils) {
 
 var CourseDetails = Backbone.Model.extend({
     defaults: {
@@ -21,7 +21,8 @@ var CourseDetails = Backbone.Model.extend({
         course_image_asset_path: '', // the full URL (/c4x/org/course/num/asset/filename)
         pre_requisite_courses: [],
         entrance_exam_enabled : '',
-        entrance_exam_minimum_score_pct: '50'
+        entrance_exam_minimum_score_pct: '50',
+        learning_info: []
     },
 
     validate: function(newattrs) {

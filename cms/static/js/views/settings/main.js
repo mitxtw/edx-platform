@@ -1,9 +1,9 @@
 define(["js/views/validation", "codemirror", "underscore", "jquery", "jquery.ui", "js/utils/date_utils", "js/models/uploads",
     "js/views/uploads", "js/views/license", "js/models/license",
-    "common/js/components/views/feedback_notification", "jquery.timepicker", "date", "gettext"],
+    "common/js/components/views/feedback_notification", "jquery.timepicker", "date", "gettext", "js/views/learning_info"],
        function(ValidatingView, CodeMirror, _, $, ui, DateUtils, FileUploadModel,
                 FileUploadDialog, LicenseView, LicenseModel, NotificationView,
-                timepicker, date, gettext) {
+                timepicker, date, gettext, LearningInfoView) {
 
 var DetailsView = ValidatingView.extend({
     // Model class is CMS.Models.Settings.CourseDetails
@@ -20,7 +20,9 @@ var DetailsView = ValidatingView.extend({
         // would love to move to a general superclass, but event hashes don't inherit in backbone :-(
         'focus :input' : "inputFocus",
         'blur :input' : "inputUnfocus",
-        'click .action-upload-image': "uploadImage"
+        'click .action-upload-image': "uploadImage",
+        'click .add-course-learning-info': "addLearningFields",
+        'click .delete-course-learning-info': "removeLearningInfo"
     },
 
     initialize : function(options) {
@@ -60,6 +62,22 @@ var DetailsView = ValidatingView.extend({
                 closeIcon: true
             }).show();
         }
+    },
+
+    renderLearningInfo: function() {
+        /*
+        * Render course learning information view.
+        * */
+        $("li.course-settings-learning-fields").empty();
+        $.each( this.model.get('learning_info'), function( index, value ) {
+            var self = this;
+            var learningInfoView = new LearningInfoView({
+                el: $(".course-settings-learning-fields"),
+                index: index,
+                info: value
+            });
+            learningInfoView.render();
+        });
     },
 
     render: function() {
@@ -115,7 +133,8 @@ var DetailsView = ValidatingView.extend({
             paceToggleTip.text(gettext('Course pacing cannot be changed once a course has started.'));
         }
 
-        this.licenseView.render()
+        this.licenseView.render();
+        this.renderLearningInfo();
 
         return this;
     },
@@ -132,7 +151,39 @@ var DetailsView = ValidatingView.extend({
         'course_image_asset_path': 'course-image-url',
         'pre_requisite_courses': 'pre-requisite-course',
         'entrance_exam_enabled': 'entrance-exam-enabled',
-        'entrance_exam_minimum_score_pct': 'entrance-exam-minimum-score-pct'
+        'entrance_exam_minimum_score_pct': 'entrance-exam-minimum-score-pct',
+        'course_settings_learning_fields': 'course-settings-learning-fields',
+        'add_course_learning_info': 'add-course-learning-info',
+        'delete_course_learning_info': 'delete-course-learning-info',
+        'fields_course_learning_info': 'fields-course-learning-info'
+    },
+
+    removeLearningInfo: function(event) {
+        /*
+        * Remove course learning fields.
+        * */
+        event.preventDefault();
+        var index = event.currentTarget.getAttribute('data-index'),
+            existing_info = _.clone(this.model.get('learning_info'));
+        existing_info.splice(index, 1);
+        this.model.set('learning_info', existing_info);
+        this.renderLearningInfo();
+    },
+
+    addLearningFields: function() {
+        /*
+        * Add new course learning fields.
+        * */
+        var existing_info = _.clone(this.model.get('learning_info'));
+        this.learningInfoView = new LearningInfoView({
+            el: this.$(".course-settings-learning-fields"),
+            index: existing_info.length,
+            info: ''
+        });
+
+        this.learningInfoView.render();
+        existing_info[existing_info.length] = '';
+        this.model.set('learning_info', existing_info);
     },
 
     updateTime : function(e) {
@@ -149,6 +200,13 @@ var DetailsView = ValidatingView.extend({
 
     updateModel: function(event) {
         switch (event.currentTarget.id) {
+        case 'course-learning-info-' + event.currentTarget.getAttribute('data-index'):
+            var index = event.currentTarget.getAttribute('data-index'),
+                value = $(event.currentTarget).val(),
+                learning_info = _.clone(this.model.get('learning_info'));
+            learning_info[index] = value;
+            this.model.set('learning_info', learning_info);
+            break;
         case 'course-language':
             this.setField(event);
             break;

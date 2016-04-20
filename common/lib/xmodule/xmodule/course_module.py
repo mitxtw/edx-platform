@@ -774,6 +774,12 @@ class CourseFields(object):
         scope=Scope.settings
     )
 
+    learning_info = List(
+        display_name=_("Course Learning Information"),
+        help=_("Specify what student can learn from the course."),
+        scope=Scope.settings
+    )
+
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method
     """

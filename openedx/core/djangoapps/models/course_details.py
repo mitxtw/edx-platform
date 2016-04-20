@@ -58,6 +58,7 @@ class CourseDetails(object):
             '50'
         )  # minimum passing score for entrance exam content module/tree,
         self.self_paced = None
+        self.learning_info = []
 
     @classmethod
     def fetch_about_attribute(cls, course_key, attribute):
@@ -92,6 +93,7 @@ class CourseDetails(object):
         course_details.course_image_asset_path = course_image_url(descriptor)
         course_details.language = descriptor.language
         course_details.self_paced = descriptor.self_paced
+        course_details.learning_info = descriptor.learning_info  #(descriptor, "course_learning_info", [])
 
         # Default course license is "All Rights Reserved"
         course_details.license = getattr(descriptor, "license", "all-rights-reserved")
@@ -216,6 +218,10 @@ class CourseDetails(object):
 
         if 'license' in jsondict:
             descriptor.license = jsondict['license']
+            dirty = True
+
+        if 'learning_info' in jsondict:
+            descriptor.learning_info = jsondict['learning_info']
             dirty = True
 
         if 'language' in jsondict and jsondict['language'] != descriptor.language:

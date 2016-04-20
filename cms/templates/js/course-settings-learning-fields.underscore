@@ -1,0 +1,6 @@
+ <div class="field text" id="fields-course-learning-info-<%- index %>">
+    <label for= "course-learning-info-<%- index %>"> <%- gettext("What You'll Learn") %>
+        <input type="text" id="course-learning-info-<%- index %>" value="<%- info %>" data-index=<%- index %>>
+        <input type="button" value='-' class="delete-course-learning-info" data-index=<%- index %>>
+    </label>
+ </div>
