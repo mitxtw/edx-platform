@@ -843,7 +843,8 @@ define(["jquery", "common/js/spec_helpers/ajax_helpers", "common/js/components/u
                             "is_time_limited": true,
                             "is_practice_exam": false,
                             "is_proctored_enabled": true,
-                            "default_time_limit_minutes": 150
+                            "default_time_limit_minutes": 150,
+                            "hide_after_due": false,
                         }
                     });
                     expect(requests[0].requestHeaders['X-HTTP-Method-Override']).toBe('PATCH');
