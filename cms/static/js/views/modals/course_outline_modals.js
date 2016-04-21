@@ -432,7 +432,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             this.$('#id_exam_review_rules').val(value);
         },
         setHideAfterDue: function(value) {
-            this.$('#id_hide_after_due_date').prop('checked', value);
+            this.$('#id_hide_exam_after_due_date').prop('checked', value);
         },
         isValidTimeLimit: function(time_limit) {
             var pattern = new RegExp('^\\d{1,2}:[0-5][0-9]$');
@@ -459,7 +459,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             var is_proctored_exam;
             var time_limit = this.getExamTimeLimit();
             var exam_review_rules = this.$('#id_exam_review_rules').val();
-            var hide_after_due = this.$('#id_hide_after_due_date').val();
+            var hide_after_due = this.$('#id_hide_exam_after_due_date').is(':checked');
 
             if (this.$("#id_not_timed").is(':checked')){
                 is_time_limited = false;
