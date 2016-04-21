@@ -343,31 +343,38 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             event.preventDefault();
             this.$('#id_time_limit_div').hide();
             this.$('.exam-review-rules-list-fields').hide();
+            this.$('.timed-exam-options-list-fields').hide();
             this.$('#id_time_limit').val('00:00');
         },
-        selectSpecialExam: function (showRulesField) {
+        selectSpecialExam: function (additionalOptions) {
             this.$('#id_time_limit_div').show();
             if (!this.isValidTimeLimit(this.$('#id_time_limit').val())) {
                 this.$('#id_time_limit').val('00:30');
             }
-            if (showRulesField) {
+            if ($.inArray("review-rules", additionalOptions) !== -1) {
                 this.$('.exam-review-rules-list-fields').show();
             }
             else {
                 this.$('.exam-review-rules-list-fields').hide();
             }
+            if ($.inArray("hide-after-due", additionalOptions) !== -1) {
+                this.$('.timed-exam-options-list-fields').show();
+            }
+            else {
+                this.$('.timed-exam-options-list-fields').hide();
+            }
         },
         setTimedExam: function (event) {
             event.preventDefault();
-            this.selectSpecialExam(false);
+            this.selectSpecialExam(["hide-after-due"]);
         },
         setPracticeExam: function (event) {
             event.preventDefault();
-            this.selectSpecialExam(false);
+            this.selectSpecialExam([]);
         },
         setProctoredExam: function (event) {
             event.preventDefault();
-            this.selectSpecialExam(true);
+            this.selectSpecialExam(["review-rules"]);
         },
         timeLimitFocusout: function(event) {
             event.preventDefault();
@@ -390,6 +397,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             this.setExamTime(this.model.get('default_time_limit_minutes'));
 
             this.setReviewRules(this.model.get('exam_review_rules'));
+            this.setHideAfterDue(this.model.get('hide_after_due'));
         },
         setExamType: function(is_time_limited, is_proctored_exam, is_practice_exam) {
             if (!is_time_limited) {
@@ -399,6 +407,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
 
             this.$('#id_time_limit_div').show();
             this.$('.exam-review-rules-list-fields').hide();
+            this.$('.timed-exam-options-list-fields').hide();
 
             if (this.options.enable_proctored_exams && is_proctored_exam) {
                 if (is_practice_exam) {
@@ -412,6 +421,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
                 // if the subsection is not time limited, then
                 // here we rightfully assume that it just a timed exam
                 this.$("#id_timed_exam").prop('checked', true);
+                this.$('.timed-exam-options-list-fields').show();
             }
         },
         setExamTime: function(value) {
@@ -420,6 +430,9 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         },
         setReviewRules: function (value) {
             this.$('#id_exam_review_rules').val(value);
+        },
+        setHideAfterDue: function(value) {
+            this.$('#id_hide_after_due_date').prop('checked', value);
         },
         isValidTimeLimit: function(time_limit) {
             var pattern = new RegExp('^\\d{1,2}:[0-5][0-9]$');
@@ -446,6 +459,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             var is_proctored_exam;
             var time_limit = this.getExamTimeLimit();
             var exam_review_rules = this.$('#id_exam_review_rules').val();
+            var hide_after_due = this.$('#id_hide_after_due_date').val();
 
             if (this.$("#id_not_timed").is(':checked')){
                 is_time_limited = false;
@@ -470,6 +484,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
                     'is_practice_exam': is_practice_exam,
                     'is_time_limited': is_time_limited,
                     'exam_review_rules': exam_review_rules,
+                    'hide_after_due': hide_after_due,
                     // We have to use the legacy field name
                     // as the Ajax handler directly populates
                     // the xBlocks fields. We will have to
