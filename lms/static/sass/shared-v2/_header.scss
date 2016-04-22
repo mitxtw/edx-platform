@@ -74,10 +74,10 @@
                     }
                 }
             }
-        }
 
-        .nav-courseware.list-inline {
-            margin-top: 5px;
+            &.nav-global, &.nav-courseware {
+                margin-top: 5px;
+            }
         }
     }
 }
