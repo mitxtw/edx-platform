@@ -14,7 +14,7 @@
 %>
 
 <%block name="header_extras">
-% for template_name in ["basic-modal", "modal-button", "upload-dialog", "license-selector", "course-settings-learning-fields"]:
+% for template_name in ["basic-modal", "modal-button", "upload-dialog", "license-selector", "course-settings-learning-fields", "course-instructor-details"]:
   <script type="text/template" id="${template_name}-tpl">
     <%static:include path="js/${template_name}.underscore" />
   </script>
@@ -368,6 +368,11 @@ CMS.URL.UPLOAD_ASSET = '${upload_asset_url}';
                          <i class="icon fa fa-plus icon-inline"></i>${_("Add Learning Details")}</a>
                  </li>
                  <li class="course-settings-learning-fields"></li>
+                 <li>
+                     <a href="javascript:void(0)" class="action action-primary button new-button add-course-instructor-info">
+                         <i class="icon fa fa-plus icon-inline"></i>${_("Add Instructor Details")}</a>
+                 </li>
+                 <li class="course-instructor-details-fields"></li>
               </ol>
             </section>
 

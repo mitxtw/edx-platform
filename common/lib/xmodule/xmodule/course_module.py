@@ -777,6 +777,24 @@ class CourseFields(object):
     learning_info = List(
         display_name=_("Course Learning Information"),
         help=_("Specify what student can learn from the course."),
+        default=[''],
+        scope=Scope.settings
+    )
+
+    instructor_info = Dict(
+        display_name=_("Course Instructor"),
+        help=_("Enter the details for Course Instructor"),
+        default={
+            "instructors": [
+                {
+                    "name": "",
+                    "title": "",
+                    "organization": "",
+                    "image": "",
+                    "bio": "",
+                },
+            ]
+        },
         scope=Scope.settings
     )
 

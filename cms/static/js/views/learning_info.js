@@ -10,14 +10,16 @@ define([ // jshint ignore:line
 function ($, _, Backbone, gettext, TemplateUtils) {
     'use strict';
     var LearningInfoView = Backbone.View.extend({
-        tagName: 'div',
+
+        events: {
+            'click .delete-course-learning-info': "removeLearningInfo"
+        },
 
         initialize: function(options) {
             // Set up the initial state of the attributes set for this model instance
              _.bindAll(this, 'render');
             this.template = this.loadTemplate('course-settings-learning-fields');
-            this.index = options.index;
-            this.info = options.info;
+            this.model = options.model;
         },
 
         loadTemplate: function(name) {
@@ -26,8 +28,24 @@ function ($, _, Backbone, gettext, TemplateUtils) {
         },
 
         render: function() {
-            // Assemble the editor view for this model
-            return $(this.el).append(this.template({info: this.info, index: this.index}));
+             // rendering for this model
+            $("li.course-settings-learning-fields").empty();
+            var self = this;
+            $.each(this.model.get('learning_info'), function( index, info ) {
+                $(self.el).append(self.template({index: index, info: info}));
+            });
+        },
+
+        removeLearningInfo: function(event) {
+            /*
+            * Remove course learning fields.
+            * */
+            event.preventDefault();
+            var index = event.currentTarget.getAttribute('data-index'),
+                existing_info = _.clone(this.model.get('learning_info'));
+            existing_info.splice(index, 1);
+            this.model.set('learning_info', existing_info);
+            this.render();
         }
 
     });

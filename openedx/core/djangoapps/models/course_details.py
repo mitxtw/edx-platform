@@ -93,7 +93,8 @@ class CourseDetails(object):
         course_details.course_image_asset_path = course_image_url(descriptor)
         course_details.language = descriptor.language
         course_details.self_paced = descriptor.self_paced
-        course_details.learning_info = descriptor.learning_info  #(descriptor, "course_learning_info", [])
+        course_details.learning_info = descriptor.learning_info
+        course_details.instructor_info = descriptor.instructor_info
 
         # Default course license is "All Rights Reserved"
         course_details.license = getattr(descriptor, "license", "all-rights-reserved")
@@ -224,6 +225,10 @@ class CourseDetails(object):
             descriptor.learning_info = jsondict['learning_info']
             dirty = True
 
+        if 'instructor_info' in jsondict:
+            descriptor.instructor_info = jsondict['instructor_info']
+            dirty = True
+        
         if 'language' in jsondict and jsondict['language'] != descriptor.language:
             descriptor.language = jsondict['language']
             dirty = True
