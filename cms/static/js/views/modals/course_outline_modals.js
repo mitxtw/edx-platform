@@ -400,14 +400,16 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             this.setHideAfterDue(this.model.get('hide_after_due'));
         },
         setExamType: function(is_time_limited, is_proctored_exam, is_practice_exam) {
+            this.$('#id_time_limit_div').hide();
+            this.$('.exam-review-rules-list-fields').hide();
+            this.$('.timed-exam-options-list-fields').hide();
+
             if (!is_time_limited) {
                 this.$("#id_not_timed").prop('checked', true);
                 return;
             }
 
             this.$('#id_time_limit_div').show();
-            this.$('.exam-review-rules-list-fields').hide();
-            this.$('.timed-exam-options-list-fields').hide();
 
             if (this.options.enable_proctored_exams && is_proctored_exam) {
                 if (is_practice_exam) {
