@@ -573,11 +573,13 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         self.q(css=".action-save").first.click()
         self.wait_for_ajax()
 
-    def make_exam_timed(self):
+    def make_exam_timed(self, hide_after_due=False):
         """
         Makes a timed exam.
         """
         self.q(css="#id_timed_exam").first.click()
+        if hide_after_due:
+            self.q(css='#id_hide_exam_after_due_date').first.click()
         self.q(css=".action-save").first.click()
         self.wait_for_ajax()
 
@@ -616,6 +618,12 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         Returns whether the review rules field is visible
         """
         return self.q(css=".exam-review-rules-list-fields").visible
+
+    def hide_after_due_field_visible(self):
+        """
+        Returns whether the hide after due field is visible
+        """
+        return self.q(css=".timed-exam-options-list-fields").visible
 
     def proctoring_items_are_displayed(self):
         """
