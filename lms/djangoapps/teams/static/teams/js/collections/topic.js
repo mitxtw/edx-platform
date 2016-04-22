@@ -4,7 +4,6 @@
         function(_, gettext, BaseCollection, TopicModel) {
             var TopicCollection = BaseCollection.extend({
                 initialize: function(topics, options) {
-                    this.url = options.url;
 
                     var self = this;
 
