@@ -3,7 +3,7 @@
  */
 var edx = edx || {};
 
-(function ($, _, _s, Backbone) {
+(function ($, _, Backbone) {
     'use strict';
 
     edx.commerce = edx.commerce || {};
@@ -18,11 +18,6 @@ var edx = edx || {};
             this.ecommerceOrderNumber = $.url('?orderNum');
             this.useEcommerceApi = this.ecommerceBasketId || this.ecommerceOrderNumber;
             _.bindAll(this, 'renderReceipt', 'renderError', 'getProviderData', 'renderProvider', 'getCourseData');
-
-            /* Mix non-conflicting functions from underscore.string (all but include, contains, and reverse) into
-             * the Underscore namespace.
-             */
-            _.mixin(_s.exports());
 
             this.render();
         },
@@ -305,7 +300,7 @@ var edx = edx || {};
         el: $('#receipt-container')
     });
 
-})(jQuery, _, _.str, Backbone);
+})(jQuery, _, Backbone);
 
 function completeOrder(event) {     // jshint ignore:line
     var courseKey = $(event).data("course-key"),

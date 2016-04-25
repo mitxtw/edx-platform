@@ -15,6 +15,16 @@ define([
                 );
                 data = {
                     "status": "Open",
+                    "billed_to": {
+                        "city": "aasd",
+                        "first_name": "awais",
+                        "last_name": "qureshi",
+                        "country": "AL",
+                        "line2": "asd",
+                        "line1": "asd",
+                        "state": "",
+                        "postcode": "23123"
+                    },
                     "lines": [
                         {
                             "status": "Open",
