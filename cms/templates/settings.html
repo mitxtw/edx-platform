@@ -368,14 +368,23 @@ CMS.URL.UPLOAD_ASSET = '${upload_asset_url}';
                          <i class="icon fa fa-plus icon-inline"></i>${_("Add Learning Details")}</a>
                  </li>
                  <li class="course-settings-learning-fields"></li>
+
+              </ol>
+            </section>
+        <hr class="divide" />
+          <section class="group-settings instructor-types">
+              <header>
+                <h2 class="title-2">${_("Course Instructors Information")}</h2>
+                <span class="tip">${_("Information for course instructors")}</span>
+              </header>
+              <ol class="list-input enum">
                  <li>
                      <a href="javascript:void(0)" class="action action-primary button new-button add-course-instructor-info">
                          <i class="icon fa fa-plus icon-inline"></i>${_("Add Instructor Details")}</a>
                  </li>
-                 <li class="course-instructor-details-fields"></li>
+                 <li class="field-group course-instructor-details-fields"></li>
               </ol>
             </section>
-
           % if about_page_editable or is_prerequisite_courses_enabled or is_entrance_exams_enabled:
             <hr class="divide" />
 
