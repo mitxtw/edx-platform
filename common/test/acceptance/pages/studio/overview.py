@@ -558,6 +558,17 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         self.q(css=".action-save").first.click()
         self.wait_for_ajax()
 
+    def change_problem_due_date_in_studio(self, date):
+        """
+        Sets a new start date.
+
+        Expects date to be a string that will be accepted by the input (for example, '01/01/1970')
+        """
+        self.q(css=".subsection-header-actions .configure-button").first.click()
+        self.q(css="#start_date").fill(date)
+        self.q(css=".action-save").first.click()
+        self.wait_for_ajax()
+
     def select_advanced_tab(self):
         """
         Select the advanced settings tab

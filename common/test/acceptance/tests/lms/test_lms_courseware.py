@@ -5,6 +5,7 @@ End-to-end tests for the LMS.
 
 import json
 from nose.plugins.attrib import attr
+from datetime import datetime, timedelta
 import ddt
 
 from capa.tests.response_xml_factory import MultipleChoiceResponseXMLFactory
@@ -126,6 +127,7 @@ class CoursewareTest(UniqueCourseTest):
             courseware_page_breadcrumb = self.courseware_page.breadcrumb
             expected_breadcrumb = self._create_breadcrumb(index)  # pylint: disable=no-member
             self.assertEqual(courseware_page_breadcrumb, expected_breadcrumb)
+
 
 @ddt.ddt
 class ProctoredExamTest(UniqueCourseTest):
@@ -279,11 +281,11 @@ class ProctoredExamTest(UniqueCourseTest):
         LogoutPage(self.browser).visit()
         self._auto_auth("STAFF_TESTER", "staff101@example.com", True)
         self.course_outline.visit()
-        self.course_outline.due_date = datetime.now() - datetime.timedelta(30)
-        self.q(css=".action-save").first.click()
+        last_week = (datetime.today() - timedelta(days=7)).strftime("%m/%d/%Y")
+        self.course_outline.change_problem_due_date_in_studio(last_week)
 
         LogoutPage(self.browser).visit()
-        self._login_as_a_verified_user()
+        self._auto_auth(self.USERNAME, self.EMAIL, False)
         self.courseware_page.visit()
         self.assertEqual(self.courseware_page.has_submitted_exam_message(), hide_after_due)
 
