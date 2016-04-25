@@ -812,13 +812,13 @@ div.problem {
         @include status-icon($gray-l4, "\f128");
       }
     }
+  }
 
-    &.inputtype.formulaequationinput {
-      display: inline-block;
+  .capa_inputtype.textline.inputtype.formulaequationinput {
+    display: inline-block;
 
-      input {
-        width: calc(100% - 45px);
-      }
+    input {
+      width: calc(100% - 45px);
     }
   }
 }
